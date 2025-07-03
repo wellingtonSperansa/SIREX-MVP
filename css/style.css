@@ -192,3 +192,38 @@ footer {
 .btn-submit:hover {
     background-color: #004080;
 }
+.botao-ajuda-futurista {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #00f0ff, #007bff);
+    color: white;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: none;
+    border-radius: 30px;
+    padding: 14px 22px;
+    box-shadow: 0 0 12px #00f0ff, 0 0 25px #007bff;
+    text-decoration: none;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: pulseAjuda 2s infinite ease-in-out;
+}
+
+.botao-ajuda-futurista:hover {
+    box-shadow: 0 0 18px #00f0ff, 0 0 30px #007bff;
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #00bcd4, #0056b3);
+}
+
+@keyframes pulseAjuda {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+}

@@ -2,102 +2,131 @@
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CADASTRO DE EXAMES</title>
-    <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CADASTRO DE EXAMES</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    #alerta {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
 
-    <!-- Cabeçalho -->
-    <header>
-        <img id="logo-cabecalho" src="/media/Captura de tela 2025-06-30 213203.png" alt="Logo do Sistema" />
-    </header>
+  <!-- Cabeçalho -->
+  <header>
+    <img id="logo-cabecalho" src="/media/Captura de tela 2025-06-30 213203.png" alt="Logo do Sistema" />
+  </header>
 
-    <!-- Menu de navegação -->
-    <nav>
+  <!-- Menu de navegação -->
+  <nav>
+    <ul>
+      <li><a href="/index.html">HOME</a></li>
+      <li><a href="/consultas.html">CONSULTAS</a></li>
+      <li><a href="/cadRequesicao.html">CADASTRO REQUISIÇÃO</a></li>
+      <li>
+        <a href="#">CADASTROS</a>
         <ul>
-            <li><a href="/index.html">HOME</a></li>
-            <li><a href="/consultas.html">CONSULTAS</a></li>
-            <li><a href="/cadRequesicao.html">CADASTRO REQUISIÇÃO</a></li>
-            <li>
-                <a href="#">CADASTROS</a>
-                <ul>
-                    <li><a href="/cadMedico.html">Médicos</a></li>
-                    <li><a href="/cadPaciente.html">Pacientes</a></li>
-                    <li><a href="/cadExames.html">Exames</a></li>
-                </ul>
-            </li>
+          <li><a href="/cadMedico.html">Médicos</a></li>
+          <li><a href="/cadPaciente.html">Pacientes</a></li>
+          <li><a href="/cadExames.html">Exames</a></li>
         </ul>
-    </nav>
+      </li>
+    </ul>
+  </nav>
 
-    <!-- Conteúdo principal -->
-    <main>
-        <h2 class="textoCentral">CADASTRO DE EXAMES</h2>
-        <form id="formExame" class="form-cadastro-requisicao">
-            <div class="form-group">
-                <label for="nomeExame">Nome do Exame:</label>
-                <input type="text" id="nomeExame" name="nomeExame" required>
-            </div>
+  <!-- Conteúdo principal -->
+  <main>
+    <h2 class="textoCentral">CADASTRO DE EXAMES</h2>
+    <form id="formExame" class="form-cadastro-requisicao">
+      <div class="form-group">
+        <label for="nomeExame">Nome do Exame:</label>
+        <input type="text" id="nomeExame" name="nomeExame" required>
+      </div>
 
-            <div class="form-group">
-                <label for="descricaoExame">Descrição do Exame:</label>
-                <textarea id="descricaoExame" name="descricaoExame" rows="4" required></textarea>
-            </div>
-            <button type="submit" class="btn-submit">Cadastrar Exame</button>
-        </form>
-    </main>
+      <div class="form-group">
+        <label for="descricaoExame">Descrição do Exame:</label>
+        <textarea id="descricaoExame" name="descricaoExame" rows="4" required></textarea>
+      </div>
+      <button type="submit" class="btn-submit">Cadastrar Exame</button>
+    </form>
+  </main>
 
-    <!-- Rodapé -->
-    <footer>
-        Desenvolvido por Gabriel Schio, Igor Epping, Maico Klauss e Wellington Speransa / SIREX – © 2025
-    </footer>
+  <!-- Rodapé -->
+  <footer>
+    Desenvolvido por Gabriel Schio, Igor Epping, Maico Klauss e Wellington Speransa / SIREX – © 2025
+  </footer>
 
-    <!-- Script para IndexedDB -->
-    <script>
-        let db;
+  <!-- Alerta flutuante -->
+  <div id="alerta"></div>
 
-        const request = indexedDB.open('SistemaExames', 1);
+  <!-- Script para IndexedDB e alerta -->
+  <script>
+    function mostrarAlerta(mensagem, corFundo = "#4CAF50") {
+      const alerta = document.getElementById("alerta");
+      alerta.textContent = mensagem;
+      alerta.style.backgroundColor = corFundo;
+      alerta.style.display = "block";
 
-        request.onsuccess = function (event) {
-            db = event.target.result;
-            console.log('Banco de dados conectado com sucesso.');
-        };
+      setTimeout(() => {
+        alerta.style.display = "none";
+      }, 3000);
+    }
 
-        request.onerror = function (event) {
-            console.error('Erro ao abrir o banco:', event.target.error);
-        };
+    let db;
 
-        document.getElementById('formExame').addEventListener('submit', function (event) {
-            event.preventDefault();
+    const request = indexedDB.open('SistemaExames', 1);
 
-            if (!db) {
-                alert('Banco de dados não disponível. Tente novamente em instantes.');
-                return;
-            }
+    request.onsuccess = function (event) {
+      db = event.target.result;
+      console.log('Banco de dados conectado com sucesso.');
+    };
 
-            const nomeExame = document.getElementById('nomeExame').value;
-            const descricao = document.getElementById('descricaoExame').value;
+    request.onerror = function (event) {
+      console.error('Erro ao abrir o banco:', event.target.error);
+    };
 
-            const exame = { nomeExame, descricao };
+    document.getElementById('formExame').addEventListener('submit', function (event) {
+      event.preventDefault();
 
-            const transaction = db.transaction(['exames'], 'readwrite');
-            const store = transaction.objectStore('exames');
+      if (!db) {
+        mostrarAlerta('Banco de dados não disponível. Tente novamente em instantes.', "#f44336");
+        return;
+      }
 
-            const requestAdd = store.add(exame);
+      const nomeExame = document.getElementById('nomeExame').value;
+      const descricao = document.getElementById('descricaoExame').value;
 
-            requestAdd.onsuccess = function () {
-                alert('Exame cadastrado com sucesso!');
-                document.getElementById('formExame').reset();
-            };
+      const exame = { nomeExame, descricao };
 
-            requestAdd.onerror = function (event) {
-                console.error('Erro ao cadastrar exame:', event.target.error);
-                alert('Erro ao cadastrar exame.');
-            };
-        });
-    </script>
+      const transaction = db.transaction(['exames'], 'readwrite');
+      const store = transaction.objectStore('exames');
+
+      const requestAdd = store.add(exame);
+
+      requestAdd.onsuccess = function () {
+        mostrarAlerta('Exame cadastrado com sucesso!');
+        document.getElementById('formExame').reset();
+      };
+
+      requestAdd.onerror = function (event) {
+        console.error('Erro ao cadastrar exame:', event.target.error);
+        mostrarAlerta('Erro ao cadastrar exame.', "#f44336");
+      };
+    });
+  </script>
 
 </body>
 

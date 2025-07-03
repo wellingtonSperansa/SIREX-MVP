@@ -81,6 +81,20 @@
             margin-top: 40px;
             font-size: 0.9rem;
         }
+
+        #alerta {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
     </style>
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -140,7 +154,21 @@
         Desenvolvido por Gabriel Schio, Igor Epping, Maico Klauss e Wellington Speransa / SIREX – © 2025
     </footer>
 
+    <!-- Alerta personalizado -->
+    <div id="alerta"></div>
+
     <script>
+        function mostrarAlerta(mensagem, corFundo = "#4CAF50") {
+            const alerta = document.getElementById("alerta");
+            alerta.textContent = mensagem;
+            alerta.style.backgroundColor = corFundo;
+            alerta.style.display = "block";
+
+            setTimeout(() => {
+                alerta.style.display = "none";
+            }, 3000);
+        }
+
         let db;
 
         const request = indexedDB.open('SistemaExames', 1);
@@ -158,7 +186,7 @@
             event.preventDefault();
 
             if (!db) {
-                alert('Banco de dados não está pronto. Tente novamente em alguns segundos.');
+                mostrarAlerta('Banco de dados não está pronto. Tente novamente em alguns segundos.', "#f44336");
                 return;
             }
 
@@ -176,13 +204,13 @@
             const addRequest = store.add(medico);
 
             addRequest.onsuccess = function () {
-                alert('Médico cadastrado com sucesso!');
+                mostrarAlerta('Médico cadastrado com sucesso!');
                 document.getElementById('formMedico').reset();
             };
 
             addRequest.onerror = function (event) {
                 console.error('Erro ao cadastrar médico:', event.target.error);
-                alert('Erro ao cadastrar médico. Verifique se o CPF ou CRM já estão cadastrados.');
+                mostrarAlerta('Erro ao cadastrar médico. Verifique se o CPF ou CRM já estão cadastrados.', "#f44336");
             };
         });
     </script>

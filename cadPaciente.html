@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -72,6 +73,20 @@
             background-color: #f44336;
             color: white;
         }
+
+        #alerta {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            z-index: 1000;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -141,7 +156,21 @@
         Desenvolvido por Gabriel Schio, Igor Epping, Maico Klauss e Wellington Speransa / SIREX – © 2025
     </footer>
 
+    <!-- Mensagem de alerta personalizada -->
+    <div id="alerta"></div>
+
     <script>
+        function mostrarAlerta(mensagem, corFundo = "#4CAF50") {
+            const alerta = document.getElementById("alerta");
+            alerta.textContent = mensagem;
+            alerta.style.backgroundColor = corFundo;
+            alerta.style.display = "block";
+
+            setTimeout(() => {
+                alerta.style.display = "none";
+            }, 3000);
+        }
+
         let db;
         const request = indexedDB.open('SistemaExames', 1);
 
@@ -194,7 +223,7 @@
             };
 
             if (!db) {
-                alert("Banco de dados não carregado ainda.");
+                mostrarAlerta("Banco de dados não carregado ainda.", "#f44336");
                 return;
             }
 
@@ -204,12 +233,12 @@
             const request = store.add(paciente);
 
             request.onsuccess = function () {
-                alert("Paciente cadastrado com sucesso!");
+                mostrarAlerta("Paciente cadastrado com sucesso!");
                 document.getElementById("formPaciente").reset();
             };
 
             request.onerror = function (event) {
-                alert("Erro ao cadastrar paciente: " + event.target.error);
+                mostrarAlerta("Erro ao cadastrar paciente: " + event.target.error, "#f44336");
             };
         });
     </script>
